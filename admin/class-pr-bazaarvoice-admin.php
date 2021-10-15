@@ -96,10 +96,33 @@ class Pr_Bazaarvoice_Admin {
 		* class.
 		*/
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pr-bazaarvoice-admin.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script('bazaar-voice-block', plugin_dir_url(__FILE__) . 'js/pr-bazaarvoice-admin-attribute-block.js', array('wp-blocks','wp-editor'), true );
+		wp_enqueue_script($this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pr-bazaarvoice-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script($this->plugin_name.'-block', plugin_dir_url(__FILE__) . 'js/pr-bazaarvoice-admin-block.js', array('wp-blocks','wp-editor'), true );
 
 	}
+
+	/**
+    * Register the block
+    */	
+	public function register_block() {
+
+		if ( ! function_exists( 'register_block_type' ) ) {
+			echo 'Gutenberg is not active.';
+			return;
+		}
+		
+    	// Register the script
+    	wp_register_script(
+			$this->plugin_name.'-block',
+			plugins_url( 'js/pr-bazaarvoice-admin-block.js', __FILE__ ),
+			array( 'wp-blocks', 'wp-editor' )
+		);
+  
+		// Register the block
+		register_block_type( $this->plugin_name.'/bazaarvoice', array(
+			'editor_script' => $this->plugin_name.'-block',
+		));
+    }
 
 	/**
     * Add plugin admin menu

@@ -168,6 +168,9 @@ class Pr_Bazaarvoice {
 		// Save/Update our plugin options
 		$this->loader->add_action('admin_init', $plugin_admin, 'update_settings');
 
+		// Register the block
+		$this->loader->add_action( 'init', $plugin_admin, 'register_block' );
+
 	}
 
 	/**
