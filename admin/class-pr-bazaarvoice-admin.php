@@ -97,12 +97,10 @@ class Pr_Bazaarvoice_Admin {
 		*/
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pr-bazaarvoice-admin.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script($this->plugin_name.'-block', plugin_dir_url(__FILE__) . 'js/pr-bazaarvoice-admin-block.js', array('wp-blocks','wp-editor'), true );
-
 	}
 
 	/**
-    * Register the block
+    * Register the block for the gutenberg editor
     */	
 	public function register_block() {
 
