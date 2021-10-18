@@ -114,7 +114,7 @@ class Pr_Bazaarvoice_Admin {
     	// Register the script
     	wp_register_script(
 			$this->plugin_name.'-block',
-			plugins_url( 'js/pr-bazaarvoice-admin-block.js', __FILE__ ),
+			plugins_url( 'js/pr-bazaarvoice-block.js', __FILE__ ),
 			array( 'wp-blocks', 'wp-editor' )
 		);
   
