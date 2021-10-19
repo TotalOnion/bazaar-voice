@@ -17,6 +17,7 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 	* This represents what the editor will render when the block is used.
 	* https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
 	*/
+
 	/* This configures how the content and color fields will work, and sets up the necessary elements */
 	edit: function(props) {
 
@@ -103,8 +104,10 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 	* which is then serialized into post_content.
 	* https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
 	*/
+
 	save: function(props) {
 		let adminOutput = [];
+
 		// Rating summary
 		if (props.attributes.ratingsummary == 1) {
 			adminOutput.push(wp.element.createElement(
