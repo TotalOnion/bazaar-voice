@@ -101,21 +101,21 @@ class Pr_Bazaarvoice_Admin {
 
 	/**
     * Register the block for the gutenberg editor
-    */	
+    */
 	public function register_block() {
 
 		if ( ! function_exists( 'register_block_type' ) ) {
 			echo 'Gutenberg is not active.';
 			return;
 		}
-		
+
     	// Register the script
-    	wp_register_script(
+		wp_register_script(
 			$this->plugin_name.'-block',
 			plugins_url( 'js/pr-bazaarvoice-block.js', __FILE__ ),
 			array( 'wp-blocks', 'wp-editor' )
 		);
-  
+
 		// Register the block
 		register_block_type( $this->plugin_name.'/bazaarvoice', array(
 			'editor_script' => $this->plugin_name.'-block',
@@ -147,6 +147,7 @@ class Pr_Bazaarvoice_Admin {
 	*
 	* @since    1.1.0
 	*/
+
 	public function add_settings_page() {
 		add_options_page(
 			'Bazaarvoice Settings',               // page title
@@ -169,8 +170,8 @@ class Pr_Bazaarvoice_Admin {
 		global $sitepress;
 
 		add_option(PR_BAZAARVOICE_NAME);
-		
-		//register our settings		
+
+		//register our settings
 		register_setting(
 			PR_BAZAARVOICE_NAME ,
 			PR_BAZAARVOICE_NAME. '-default-code',
@@ -181,7 +182,7 @@ class Pr_Bazaarvoice_Admin {
 				'default'      => '',
 			)
 		);
-   
+
 		// Adds the settings *section*
 		// reference https://developer.wordpress.org/reference/functions/add_settings_section/
 		add_settings_section(
@@ -189,11 +190,11 @@ class Pr_Bazaarvoice_Admin {
 			'',  // Title for the section
 			array( $this, 'render_section_intro' ),      // Callable function to echo the intro
 			PR_BAZAARVOICE_SLUG . '-settings-page'    // the page this section appears on (defined in registerPage above)
-		); 
+		);
 
 		// Create the default field
 		$default_field = PR_BAZAARVOICE_NAME . '-default-code';
-		
+
 		// This adds the html field that renders the setting
 		// reference https://developer.wordpress.org/reference/functions/add_settings_field/
 		add_settings_field(
@@ -211,7 +212,7 @@ class Pr_Bazaarvoice_Admin {
 			return;
 		}
 
-		// Loop over all the markets and get the name, and if they are currently hidden	
+		// Loop over all the markets and get the name, and if they are currently hidden
 		$market_data = array();
 		foreach ( $wpml_options['active_languages'] as $active_language ) {
 			$details = $sitepress->get_language_details( $active_language );
@@ -219,15 +220,9 @@ class Pr_Bazaarvoice_Admin {
 				continue;
 			}
 
-			$is_hidden = in_array(
-				$details[ 'code' ],
-				$wpml_options[ 'hidden_languages' ] ?? []
-			);
-
 			$market_data[] = array(
 				'code'      => $details[ 'code' ],
-				'name'      => $details[ 'english_name' ],
-				'is_hidden' => $is_hidden,
+				'name'      => $details[ 'english_name' ]
 			);
 		}
 
@@ -245,13 +240,13 @@ class Pr_Bazaarvoice_Admin {
 				PR_BAZAARVOICE_NAME . '_options_section',	// slug of the sction the field appears in
 				array($bazaarvoice_language_field)			// Args for the field
 			);
-		}	
+		}
 
     }
 
 	/**
 	* Render a header if needed
-	*/	
+	*/
 	public function render_section_intro() {
 		_e(
 			'Add the default Bazaarvoice code below',
@@ -261,20 +256,20 @@ class Pr_Bazaarvoice_Admin {
 
 	/**
 	* Render textareas on the settings page
-	*/	
+	*/
 	public function render_fields($array) {
-		
+
 		$options = get_option(PR_BAZAARVOICE_NAME);
 		$bazaarvoice_field_name = $array[0];
 		$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
 
 		include __DIR__ . '/partials/pr-bazaarvoice-default-textarea.php';
 
-	}	
+	}
 
 	/**
-	* Update the option when form is submitted	
-	*/	
+	* Update the option when form is submitted
+	*/
 	public function update_settings() {
     	register_setting(PR_BAZAARVOICE_NAME, PR_BAZAARVOICE_NAME);
 	}
