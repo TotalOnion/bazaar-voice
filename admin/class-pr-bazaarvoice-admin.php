@@ -191,12 +191,12 @@ class Pr_Bazaarvoice_Admin {
 		// This adds the html field that renders the setting
 		// reference https://developer.wordpress.org/reference/functions/add_settings_field/
 		add_settings_field(
-			PR_BAZAARVOICE_NAME . '-default-code', // id="" value
-			'Default settings',                   // <label> value
-			array( $this, 'render_fields' ),    // callback to actually do the rendering of the input
-			PR_BAZAARVOICE_SLUG . '-settings-page',      // Slug of the page to show this on (defined in registerPage above)
-			PR_BAZAARVOICE_NAME . '_options_section',     // slug of the sction the field appears in
-			array($default_field) 	// Pass the default field to the html
+			PR_BAZAARVOICE_NAME . '-default-code', 			// id="" value
+			'Default settings',                   			// <label> value
+			array( $this, 'render_fields' ),    			// callback to actually do the rendering of the input
+			PR_BAZAARVOICE_SLUG . '-settings-page',      	// Slug of the page to show this on (defined in registerPage above)
+			PR_BAZAARVOICE_NAME . '_options_section',     	// slug of the sction the field appears in
+			array($default_field) 							// Pass the default field to the html
 		);
 
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
