@@ -113,8 +113,6 @@ class Pr_Bazaarvoice_Public {
 
 		// Get the default field value
 		foreach ($option_values as $option => $value) {
-			echo $option;
-			echo $value;
 			if ($default_field == $option) {
 				$default_field_value = $value;
 			}
