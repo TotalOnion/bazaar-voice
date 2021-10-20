@@ -189,7 +189,7 @@ class Pr_Bazaarvoice {
 		add_shortcode('bazaarvoice', array($plugin_public, 'bazaarvoice_shortcode'));
 
 		// Define a filter for the gutenberg block so we can add our own html
-		$this->loader->add_filter( 'render_block', $plugin_public, 'bazaarvoice_render_block', 10,3 );
+		$this->loader->add_filter( 'render_block', $plugin_public, 'bazaarvoice_block_filter', 10,3 );
 	}
 
 	/**

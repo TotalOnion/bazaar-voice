@@ -168,11 +168,13 @@ class Pr_Bazaarvoice_Public {
 	*/
 	public function bazaarvoice_shortcode($atts = []) {
 
+		// Get the attributes
         $attributes = shortcode_atts([
             'id' => null,
 			'type' => null
         ], $atts, 'bazaarvoice');
 
+		// Return the bazaar voice code if we have an id
 		if (!empty($attributes['id'])) {
 			echo '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode</div>';
 		}
@@ -181,9 +183,27 @@ class Pr_Bazaarvoice_Public {
 	/**
 	* Bazaarvoice filter to modify html
 	*/
-	public function bazaarvoice_render_block($block_content, $block) {
+	public function bazaarvoice_block_filter($block_content, $block) {
 
-		return $block_content;
+		$block_html = $this->get_bazaarvoice_block($block_content,$block);
+
+		if (empty($block_html)) return;
+
+		$output = '<div class="someclass">' . $block_html . '</div>';
+
+    	return $output;
 
 	}
+
+	/**
+	* Get the relevant block data
+	*/
+	private function get_bazaarvoice_block($block_content,$block) {
+
+		if(is_admin()) return $block_content;
+
+		if( "bazaarvoice/block" !== $block['blockName'] ) return $block_content;
+
+	}
+
 }
