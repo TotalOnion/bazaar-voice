@@ -5,6 +5,7 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 	category: 'text',
 
 	attributes: {
+		title: { type: 'string' },
 		bazaarvoice: { type: 'string' },
 		ratingsummary: { type: 'boolean', default: false },
 		reviews: { type: 'boolean', default: false },
@@ -33,10 +34,24 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 			props.setAttributes( { bazaarvoice: e.target.value } );
 		}
 
+		function onChangeText( e ) {
+			props.setAttributes( { title: e.target.value } );
+		}
+
 		return React.createElement(
 			'div',
 			{ className: 'bazaarvoice-block' },
-			React.createElement('p', {}, 'Bazaarvoice Id'),
+			React.createElement(
+			'input',
+			{
+				type: "text",
+				value: props.attributes.title,
+				onChange: onChangeText,
+				name:'Title',
+				placeholder: 'Title',
+				class: 'bazaarvoice-input'
+			}),
+			React.createElement('p', {}),
 			React.createElement(
 			'input',
 			{
@@ -145,9 +160,18 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 		}
 
 		return wp.element.createElement(
-			'div',
-			{ className: 'bazaarvoice-block' },
-			adminOutput
+			'section',
+			{ className: 'review-block', id: props.attributes.bazaarvoice },
+			wp.element.createElement(
+				'div',
+				{},
+				wp.element.createElement(
+					'h1',
+					{ style: 'opacity:0;position:absolute;pointer-events: none;'},
+					props.attributes.title
+				),
+				adminOutput
+			)
 		);
 	}
 });
