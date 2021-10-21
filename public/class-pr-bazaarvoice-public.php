@@ -192,33 +192,30 @@ class Pr_Bazaarvoice_Public {
 			}
 		}
 	}
-
 	/**
 	* Bazaarvoice filter to modify html
+	* called via apply_filters('bazaarvoice_filter', get_the_content(), $header_html, $footer_html);
 	*/
-	public function bazaarvoice_block_filter($block_content, $block) {
+	public function bazaarvoice_block_filter($content, $header, $footer) {
+		$new_content = '';
 
-		$block_html = $this->get_bazaarvoice_block($block_content,$block);
+		$blocks = parse_blocks($content);
 
-		if (empty($block_html)) {
-			return;
+		foreach ($blocks as $block) {
+			$block_content = '';
+
+			if ($block['blockName'] == 'bazaarvoice/block') {
+				$block_content = $header;
+				$block_content .= $block['innerHTML'];
+				$block_content .= $footer;
+
+				$new_content .= $block_content;
+			} else {
+				$new_content .= $block['innerHTML'];
+			}
 		}
 
-		$output = '<div class="someclass">' . $block_html . '</div>';
-
-    	return $output;
-
-	}
-
-	/**
-	* Get the relevant block data
-	*/
-	private function get_bazaarvoice_block($block_content,$block) {
-
-		if(is_admin()) return $block_content;
-
-		if( "bazaarvoice/block" !== $block['blockName'] ) return $block_content;
-
+		echo $new_content;
 	}
 
 }

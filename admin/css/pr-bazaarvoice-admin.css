@@ -4,7 +4,21 @@
 */
 
 .bazaarvoice-block {
-	background-color: #000;
-	color: #fff;
+	background-color: #fff;
+	color: #000;
 	padding: 20px;
+	border:1px solid black;
+}
+
+.components-placeholder__label {
+    font-size: 18pt;
+    font-weight: 400;
+}
+
+.editor-styles-wrapper p {
+	font-size: 13px;
+}
+
+.editor-styles-wrapper label {
+	font-size: 13px;
 }

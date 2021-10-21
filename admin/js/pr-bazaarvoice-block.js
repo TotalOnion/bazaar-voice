@@ -41,6 +41,17 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 		return React.createElement(
 			'div',
 			{ className: 'bazaarvoice-block' },
+			'',
+			React.createElement(
+				'div',
+				{ className: 'components-placeholder__label' },
+				'Bazaar Voice',
+				),
+			React.createElement(
+				'div',
+				{ className: 'components-placeholder__instructions' },
+				'Enter a title and bazaar voice id',
+			),
 			React.createElement(
 			'input',
 			{
