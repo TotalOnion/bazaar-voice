@@ -129,6 +129,7 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 				'div',
 				{'data-bv-show': 'rating_summary',
 				'data-bv-product-id': props.attributes.bazaarvoice},
+				'Rating Summary'
 			))
 		}
 
@@ -138,6 +139,7 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 				'div',
 				{'data-bv-show': 'review_highlights',
 				'data-bv-product-id': props.attributes.bazaarvoice},
+				'Review Highlights'
 			))
 		}
 
@@ -147,6 +149,7 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 				'div',
 				{'data-bv-show': 'reviews',
 				'data-bv-product-id': props.attributes.bazaarvoice},
+				'Reviews'
 			))
 		}
 
@@ -156,12 +159,13 @@ wp.blocks.registerBlockType('bazaarvoice/block', {
 				'div',
 				{'data-bv-show': 'questions',
 				'data-bv-product-id': props.attributes.bazaarvoice},
+				'Questions'
 			))
 		}
 
 		return wp.element.createElement(
 			'section',
-			{ className: 'review-block', id: props.attributes.bazaarvoice },
+			{ className: '', id: props.attributes.bazaarvoice },
 			wp.element.createElement(
 				'div',
 				{},
