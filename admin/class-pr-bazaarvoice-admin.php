@@ -144,11 +144,11 @@ class Pr_Bazaarvoice_Admin {
 
 	public function add_settings_page() {
 		add_options_page(
-			'Bazaarvoice Settings',               // page title
-			'Bazaarvoice Settings',               // menu title
-			'manage_options',                         // capability required to access / see it
-			PR_BAZAARVOICE_SLUG . '-settings-page', // slug (needs to be unique)
-			array( $this, 'render_settings_page' )    // callable function to render the page
+			'Bazaarvoice Settings',               		// page title
+			'Bazaarvoice Settings',               		// menu title
+			'manage_options',                         	// capability required to access / see it
+			PR_BAZAARVOICE_SLUG . '-settings-page', 	// slug (needs to be unique)
+			array( $this, 'render_settings_page' )    	// callable function to render the page
 		);
 	}
 
@@ -227,7 +227,7 @@ class Pr_Bazaarvoice_Admin {
 
 			add_settings_field(
 				$bazaarvoice_language_field,				// id="" value
-				$market['code'].' override',				// <label> vale
+				$market['name'].' override',				// <label> vale
 				array( $this, 'render_fields' ),			// callback to actually do the rendering of the input
 				PR_BAZAARVOICE_SLUG . '-settings-page',		// Slug of the page to show this on (defined in registerPage above)
 				PR_BAZAARVOICE_NAME . '_options_section',	// slug of the sction the field appears in

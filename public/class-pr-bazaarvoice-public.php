@@ -167,6 +167,7 @@ class Pr_Bazaarvoice_Public {
 	* Bazaarvoice shortcode
 	*/
 	public function bazaarvoice_shortcode($atts = []) {
+		$type_array = array();
 
 		// Get the attributes
         $attributes = shortcode_atts([
@@ -174,9 +175,21 @@ class Pr_Bazaarvoice_Public {
 			'type' => null
         ], $atts, 'bazaarvoice');
 
+		// If type is a comma seperated string, create an array
+		if (strpos($attributes['type'], ',') !== false) {
+    		$type_array = explode(',',$attributes['type']);
+		}
+
 		// Return the bazaar voice code if we have an id
 		if (!empty($attributes['id'])) {
-			echo '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode</div>';
+
+			if (!empty($type_array)) {
+				foreach ($type_array as $type) {
+					echo '<div data-bv-show="'.$type.'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$type.'</div>';
+				}
+			} else {
+				echo '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$attributes['type'].'</div>';
+			}
 		}
 	}
 
@@ -187,7 +200,9 @@ class Pr_Bazaarvoice_Public {
 
 		$block_html = $this->get_bazaarvoice_block($block_content,$block);
 
-		if (empty($block_html)) return;
+		if (empty($block_html)) {
+			return;
+		}
 
 		$output = '<div class="someclass">' . $block_html . '</div>';
 
