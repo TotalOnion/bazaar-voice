@@ -215,7 +215,7 @@ class Pr_Bazaarvoice_Public {
 			}
 		}
 
-		echo $new_content;
+		return $new_content;
 	}
 
 }
