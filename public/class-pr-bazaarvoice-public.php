@@ -197,9 +197,17 @@ class Pr_Bazaarvoice_Public {
 	* Bazaarvoice filter to modify html
 	* called via apply_filters('bazaarvoice_filter', '[bazaarvoice id="1234" type="reviews"]');
 	*/
-	public function bazaarvoice_block_filter($output, $header, $footer) {
+	public function bazaarvoice_block_filter($output, $id, $title) {
 
-			echo $header.$output.$footer;
+		$new_output = '<section class="review-block" id="'.$id.'">';
+  		$new_output .= '<div>';
+		$new_output .= '<h1 style="opacity:0;position:absolute;pointer-events: none;">';
+	  	$new_output .= $title;
+		$new_output .= '</h1>';
+		$new_output .= $output;
+		$new_output .= '</section>';
+
+		return $new_output;
 	}
 
 }
