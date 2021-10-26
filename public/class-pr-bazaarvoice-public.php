@@ -166,6 +166,7 @@ class Pr_Bazaarvoice_Public {
 	*/
 	public function bazaarvoice_shortcode($atts = []) {
 		$type_array = array();
+		$output = '';
 
 		// Get the attributes
 		$attributes = shortcode_atts([
@@ -183,39 +184,22 @@ class Pr_Bazaarvoice_Public {
 
 			if (!empty($type_array)) {
 				foreach ($type_array as $type) {
-					echo '<div data-bv-show="'.$type.'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$type.'</div>';
+					$output .= '<div data-bv-show="'.$type.'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$type.'</div>';
 				}
 			} else {
-				echo '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$attributes['type'].'</div>';
+			 	$output = '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$attributes['type'].'</div>';
 			}
 		}
+
+		return $output;
 	}
 	/**
 	* Bazaarvoice filter to modify html
-	* called via apply_filters('bazaarvoice_filter', $header_html, $footer_html);
+	* called via apply_filters('bazaarvoice_filter', '[bazaarvoice id="1234" type="reviews"]');
 	*/
-	public function bazaarvoice_block_filter($header, $footer) {
-		$content = get_the_content();
+	public function bazaarvoice_block_filter($output, $header, $footer) {
 
-		$new_content = '';
-
-		$blocks = parse_blocks($content);
-
-		foreach ($blocks as $block) {
-			$block_content = '';
-
-			if ($block['blockName'] == 'bazaarvoice/block') {
-				$block_content = $header;
-				$block_content .= $block['innerHTML'];
-				$block_content .= $footer;
-
-				$new_content .= $block_content;
-			} else {
-				$new_content .= $block['innerHTML'];
-			}
-		}
-
-		return $new_content;
+			echo $header.$output.$footer;
 	}
 
 }
