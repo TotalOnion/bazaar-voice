@@ -110,43 +110,47 @@ class Pr_Bazaarvoice_Public {
 		$default_field = PR_BAZAARVOICE_NAME . '-default-code';
 
 		// Get the default field value
-		foreach ($option_values as $option => $value) {
-			if ($default_field == $option) {
-				$default_field_value = $value;
+		if (!empty($option_values)) {
+			foreach ($option_values as $option => $value) {
+				if ($default_field == $option) {
+					$default_field_value = $value;
+				}
 			}
 		}
 
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
-		$wpml_options = get_option( 'icl_sitepress_settings' );
 		if (!$wpml_options || empty($wpml_options['active_languages']) ) {
 			if (!empty($default_field_value)) {
 				return $default_field_value;
 			}
 		}
 
+
 		// Loop over all the markets and get the market code
-		$market_data = array();
-		foreach ( $wpml_options['active_languages'] as $active_language ) {
-			$details = $sitepress->get_language_details( $active_language );
-			if ( !$details ) {
-				continue;
+		if (!empty($wpml_options) || !empty($wpml_options['active_languages']) ) {
+			$market_data = array();
+			foreach ( $wpml_options['active_languages'] as $active_language ) {
+				$details = $sitepress->get_language_details( $active_language );
+				if ( !$details ) {
+					continue;
+				}
+
+				$market_data[] = array(
+					'code'      => $details[ 'code' ]
+				);
 			}
 
-			$market_data[] = array(
-				'code'      => $details[ 'code' ]
-			);
-		}
+			// Loop over the markets and get the fields
+			foreach ($market_data as $market) {
 
-		// Loop over the markets and get the fields
-		foreach ($market_data as $market) {
+				// Set the field name
+				$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
 
-			// Set the field name
-			$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
-
-			foreach ($option_values as $option => $value) {
-				if ($bazaarvoice_language_field == $option) {
-					if (!empty($value)) {
-						$default_field_value = $value;
+				foreach ($option_values as $option => $value) {
+					if ($bazaarvoice_language_field == $option) {
+						if (!empty($value)) {
+							$default_field_value = $value;
+						}
 					}
 				}
 			}
@@ -171,33 +175,22 @@ class Pr_Bazaarvoice_Public {
 		// Get the attributes
 		$attributes = shortcode_atts([
 			'id' => null,
-			'type' => null
+			'type' => null,
+			'title' => null
 		], $atts, 'bazaarvoice');
-
-		// If type is a comma seperated string, create an array
-		if (strpos($attributes['type'], ',') !== false) {
-			$type_array = explode(',',$attributes['type']);
-		}
 
 		// Return the bazaar voice code if we have an id
 		if (!empty($attributes['id'])) {
-
-			if (!empty($type_array)) {
-				foreach ($type_array as $type) {
-					$output .= '<div data-bv-show="'.$type.'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$type.'</div>';
-				}
-			} else {
-			 	$output = '<div data-bv-show="'.$attributes['type'].'" data-bv-product-id="'.$attributes['id'].'">Bazaarvoice shortcode - '.$attributes['type'].'</div>';
-			}
+			return apply_filters('bazaarvoice_filter', $attributes['id'], $attributes['type'], $attributes['title']);
 		}
 
-		return $output;
 	}
+
 	/**
 	* Bazaarvoice filter to modify html
-	* called via apply_filters('bazaarvoice_filter', '[bazaarvoice id="1234" type="reviews"]');
+	* called via apply_filters('bazaarvoice_filter', id='1234' type='reviews' title=''');
 	*/
-	public function bazaarvoice_block_filter($output, $id, $title) {
+	public function bazaarvoice_block_filter($id, $types, $title) {
 
 		// This will return the html for the bazaarvoice block
 		$new_output = '<section class="review-block" id="'.$id.'">';
@@ -205,7 +198,14 @@ class Pr_Bazaarvoice_Public {
 		$new_output .= '<h1 style="opacity:0;position:absolute;pointer-events: none;">';
 	  	$new_output .= $title;
 		$new_output .= '</h1>';
-		$new_output .= $output;
+		if (is_array($types)) {
+			foreach ($types as $type) {
+				$new_output .= '<div data-bv-show="'.$type.'" data-bv-product-id="'.$id.'">Bazaarvoice shortcode - '.$type.'</div>';
+			}
+		} else {
+			$new_output = '<div data-bv-show="'.$types.'" data-bv-product-id="'.$id.'">Bazaarvoice shortcode - '.$types.'</div>';
+		}
+
 		$new_output .= '</section>';
 
 		return $new_output;
