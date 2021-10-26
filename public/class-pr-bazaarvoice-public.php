@@ -168,10 +168,10 @@ class Pr_Bazaarvoice_Public {
 		$type_array = array();
 
 		// Get the attributes
-        $attributes = shortcode_atts([
-            'id' => null,
+		$attributes = shortcode_atts([
+			'id' => null,
 			'type' => null
-		], $atts, 'bazaarvoice');
+			], $atts, 'bazaarvoice');
 
 		// If type is a comma seperated string, create an array
 		if (strpos($attributes['type'], ',') !== false) {
