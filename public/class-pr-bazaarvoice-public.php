@@ -199,6 +199,7 @@ class Pr_Bazaarvoice_Public {
 	*/
 	public function bazaarvoice_block_filter($output, $id, $title) {
 
+		// This will return the html for the bazaarvoice block
 		$new_output = '<section class="review-block" id="'.$id.'">';
   		$new_output .= '<div>';
 		$new_output .= '<h1 style="opacity:0;position:absolute;pointer-events: none;">';
