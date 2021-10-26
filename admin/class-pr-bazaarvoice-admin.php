@@ -252,8 +252,11 @@ class Pr_Bazaarvoice_Admin {
 	public function render_fields($array) {
 
 		$options = get_option(PR_BAZAARVOICE_NAME);
-		$bazaarvoice_field_name = $array[0];
-		$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
+
+		if (!empty($array)) {
+			$bazaarvoice_field_name = $array[0];
+			$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
+		}
 
 		include __DIR__ . '/partials/pr-bazaarvoice-default-textarea.php';
 	}

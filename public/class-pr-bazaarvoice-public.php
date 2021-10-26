@@ -74,8 +74,6 @@ class Pr_Bazaarvoice_Public {
 		* class.
 		*/
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/pr-bazaarvoice-public.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -173,11 +171,11 @@ class Pr_Bazaarvoice_Public {
         $attributes = shortcode_atts([
             'id' => null,
 			'type' => null
-        ], $atts, 'bazaarvoice');
+		], $atts, 'bazaarvoice');
 
 		// If type is a comma seperated string, create an array
 		if (strpos($attributes['type'], ',') !== false) {
-    		$type_array = explode(',',$attributes['type']);
+			$type_array = explode(',',$attributes['type']);
 		}
 
 		// Return the bazaar voice code if we have an id
@@ -194,9 +192,11 @@ class Pr_Bazaarvoice_Public {
 	}
 	/**
 	* Bazaarvoice filter to modify html
-	* called via apply_filters('bazaarvoice_filter', get_the_content(), $header_html, $footer_html);
+	* called via apply_filters('bazaarvoice_filter', $header_html, $footer_html);
 	*/
-	public function bazaarvoice_block_filter($content, $header, $footer) {
+	public function bazaarvoice_block_filter($header, $footer) {
+		$content = get_the_content();
+
 		$new_content = '';
 
 		$blocks = parse_blocks($content);
