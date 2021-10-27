@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Pernod Ricard Bazaarvoice
  * Plugin URI:        https://bitbucket.org/pernod-ricard/wordpress-plugin-pr-bazaarvoice/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin allows you to embed the bazaar voice widget into the editor
  * Version:           1.0.0
  * Author:            Pernod Ricard
  * Author URI:        https://developer.p-r.io

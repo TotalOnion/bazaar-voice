@@ -90,8 +90,9 @@ class Pr_Bazaarvoice_Admin {
 		* between the defined hooks and the functions defined in this
 		* class.
 		*/
-
 		wp_enqueue_script($this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pr-bazaarvoice-admin.js', array( 'jquery' ), $this->version, false );
+
+		wp_enqueue_script( $this->plugin_name . '-block', plugin_dir_url(__FILE__) . 'js/pr-bazaarvoice-block.js', array('wp-blocks','wp-editor', 'wp-components', 'wp-i18n'), true );
 	}
 
 	/**
@@ -108,7 +109,7 @@ class Pr_Bazaarvoice_Admin {
 		wp_register_script(
 			$this->plugin_name.'-block',
 			plugins_url( 'js/pr-bazaarvoice-block.js', __FILE__ ),
-			array( 'wp-blocks', 'wp-editor' )
+			array( 'wp-blocks', 'wp-editor', 'wp-components', 'wp-i18n' )
 		);
 
 		// Register the block
@@ -257,7 +258,7 @@ class Pr_Bazaarvoice_Admin {
 			$bazaarvoice_field_name = $array[0];
 			if (!empty($options)) {
 				$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
-			}	
+			}
 		}
 
 		include __DIR__ . '/partials/pr-bazaarvoice-default-textarea.php';
