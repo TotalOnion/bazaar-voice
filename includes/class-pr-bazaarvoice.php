@@ -166,6 +166,13 @@ class Pr_Bazaarvoice {
 		// Register the block
 		$this->loader->add_action( 'init', $plugin_admin, 'register_block' );
 
+		// Add the block back in if it's been added to a site that filters the allowed blocks
+		global $wp_version;
+		if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
+			$this->loader->add_filter( 'allowed_block_types_all', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		} else {
+			$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		}
 	}
 
 	/**
@@ -231,5 +238,4 @@ class Pr_Bazaarvoice {
 	public function get_version() {
 		return $this->version;
 	}
-
 }
