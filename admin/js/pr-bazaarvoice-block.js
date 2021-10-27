@@ -1,5 +1,5 @@
 /* This section of the code registers a new block, sets an icon and a category, and indicates what type of fields it'll include. */
-wp.blocks.registerBlockType('bazaarvoice/block', {
+wp.blocks.registerBlockType('pr-bazaarvoice/bazaarvoice', {
 	title: 'Bazaarvoice',
 	icon: 'dashicons dashicons-text',
 	category: 'text',
