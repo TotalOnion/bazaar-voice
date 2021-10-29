@@ -276,18 +276,17 @@ class Pr_Bazaarvoice_Admin {
 		global $wp_version;
 
 		if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
-			if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
-				$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
-			}
-
-			return $allowed_block_types;
-
-		} else {
 			if (is_array( $allowed_blocks ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_blocks )) {
 				$allowed_blocks[] = $this->plugin_name.'/bazaarvoice';
 			}
 
 			return $allowed_blocks;
+		} else {
+			if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
+				$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
+			}
+
+			return $allowed_block_types;
 		}
 	}
 }
