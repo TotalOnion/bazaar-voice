@@ -273,20 +273,10 @@ class Pr_Bazaarvoice_Admin {
 
 	// Filter the allowed blocks after the theme has loaded and add in the bazaarvoice block
 	public function filter_allowed_block_types( $allowed_block_types, $post) {
-		global $wp_version;
-
-		if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
-			if (is_array( $allowed_blocks ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_blocks )) {
-				$allowed_blocks[] = $this->plugin_name.'/bazaarvoice';
-			}
-
-			return $allowed_blocks;
-		} else {
-			if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
-				$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
-			}
-
-			return $allowed_block_types;
+		if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
+			$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
 		}
+
+		return $allowed_block_types;
 	}
 }

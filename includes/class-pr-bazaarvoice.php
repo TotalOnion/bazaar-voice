@@ -168,11 +168,11 @@ class Pr_Bazaarvoice {
 		$this->loader->add_action( 'init', $plugin_admin, 'register_block' );
 
 		// Add the bazaarvoice block back into the allowed blocks
-		if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
-			$this->loader->add_filter( 'allowed_block_types_all', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
-		} else {
+		//if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
 			$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
-		}
+		//} else {
+		//	$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		//}
 	}
 
 	/**
