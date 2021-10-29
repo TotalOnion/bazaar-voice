@@ -271,7 +271,7 @@ class Pr_Bazaarvoice_Admin {
 		register_setting(PR_BAZAARVOICE_NAME, PR_BAZAARVOICE_NAME);
 	}
 
-	// Filter the allowed blocks after the theme has loaded and add in the bazaarvoice block
+	// Filter the blocks and add in bazaarvoice widget
 	public function filter_allowed_block_types( $allowed_block_types, $post) {
 		if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
 			$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
