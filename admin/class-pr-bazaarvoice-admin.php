@@ -271,12 +271,23 @@ class Pr_Bazaarvoice_Admin {
 		register_setting(PR_BAZAARVOICE_NAME, PR_BAZAARVOICE_NAME);
 	}
 
-	public function filter_allowed_block_types( $allowed_block_types, $post)
-	{
-		if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
-			$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
-		}
+	// Filter the allowed blocks after the theme has loaded and add in the bazaarvoice block
+	public function filter_allowed_block_types( $allowed_block_types, $post) {
+		global $wp_version;
 
-		return $allowed_block_types;
+		if ( version_compare( $wp_version, '5.8.0', '>=' ) ) {
+			if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
+				$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
+			}
+
+			return $allowed_block_types;
+
+		} else {
+			if (is_array( $allowed_blocks ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_blocks )) {
+				$allowed_blocks[] = $this->plugin_name.'/bazaarvoice';
+			}
+
+			return $allowed_blocks;
+		}
 	}
 }
