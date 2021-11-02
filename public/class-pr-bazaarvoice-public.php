@@ -111,7 +111,6 @@ class Pr_Bazaarvoice_Public {
 
 			if ( has_blocks( $post->post_content ) ) {
 				$blocks = parse_blocks( $post->post_content );
-				print_r($blocks);
 
 				if (!in_array($this->plugin_name.'/bazaarvoice', $blocks)) {
 					return;

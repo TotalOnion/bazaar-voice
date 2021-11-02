@@ -182,7 +182,7 @@ wp.blocks.registerBlockType('pr-bazaarvoice/bazaarvoice', {
 				{},
 				wp.element.createElement(
 					'h1',
-					{ style: 'opacity:0;position:absolute;pointer-events: none;'},
+					{},
 					props.attributes.title
 				),
 				adminOutput
