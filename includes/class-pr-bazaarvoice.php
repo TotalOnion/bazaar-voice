@@ -167,8 +167,13 @@ class Pr_Bazaarvoice {
 		// Register the block
 		$this->loader->add_action( 'init', $plugin_admin, 'register_block' );
 
-		// Add the bazaarvoice block back into the allowed blocks
-		$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		// Add bazaar block to allowed blocks
+		if ( has_filter( 'allowed_block_types_all' ) ) {
+			$this->loader->add_filter( 'allowed_block_types_all', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		} else {
+			$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		}
+
 	}
 
 	/**
@@ -188,11 +193,8 @@ class Pr_Bazaarvoice {
 		// Add shortcode
 		add_shortcode('bazaarvoice', array($plugin_public, 'bazaarvoice_shortcode'));
 
-		if ( has_filter( 'allowed_block_types_all' ) ) {
-			$this->loader->add_filter( 'allowed_block_types_all', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
-		} else {
-			$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
-		}
+		// Add filter to shortcode
+		add_filter('bazaarvoice_filter', array($plugin_public, 'bazaarvoice_block_filter'), 10, 3);
 
 	}
 
