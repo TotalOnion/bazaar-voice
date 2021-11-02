@@ -273,10 +273,12 @@ class Pr_Bazaarvoice_Admin {
 
 	// Filter the blocks and add in bazaarvoice widget
 	public function filter_allowed_block_types( $allowed_block_types, $post) {
+
 		if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
 			$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
 		}
-
+		
 		return $allowed_block_types;
+
 	}
 }
