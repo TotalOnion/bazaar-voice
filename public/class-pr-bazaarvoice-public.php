@@ -105,6 +105,20 @@ class Pr_Bazaarvoice_Public {
 	public function add_js_to_footer() {
 		global $sitepress;
 
+		// If bazaarvoice is not in the block then dont include the js
+		if (!is_admin()) {
+			$post = get_post();
+
+			if ( has_blocks( $post->post_content ) ) {
+				$blocks = parse_blocks( $post->post_content );
+				print_r($blocks);
+
+				if (!in_array($this->plugin_name.'/bazaarvoice', $blocks)) {
+					return;
+				}
+			}
+		}
+
 		$option_name = PR_BAZAARVOICE_NAME;
 		$option_values = get_option($option_name);
 		$default_field = PR_BAZAARVOICE_NAME . '-default-code';
@@ -195,9 +209,14 @@ class Pr_Bazaarvoice_Public {
 		// This will return the html for the bazaarvoice block
 		$new_output = '<section class="review-block" id="'.$id.'">';
   		$new_output .= '<div>';
-		$new_output .= '<h1 style="opacity:0;position:absolute;pointer-events: none;">';
-	  	$new_output .= $title;
-		$new_output .= '</h1>';
+
+		// If you have a title
+		if (!empty($title)) {
+			$new_output .= '<h1>';
+	  		$new_output .= $title;
+			$new_output .= '</h1>';
+		}
+
 		if (is_array($types)) {
 			foreach ($types as $type) {
 				$new_output .= '<div data-bv-show="'.$type.'" data-bv-product-id="'.$id.'">Bazaarvoice shortcode - '.$type.'</div>';
