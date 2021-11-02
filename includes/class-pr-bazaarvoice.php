@@ -188,8 +188,12 @@ class Pr_Bazaarvoice {
 		// Add shortcode
 		add_shortcode('bazaarvoice', array($plugin_public, 'bazaarvoice_shortcode'));
 
-		// Add filter to shortcode
-		add_filter('bazaarvoice_filter', array($plugin_public, 'bazaarvoice_block_filter'), 10, 3);
+		if ( has_filter( 'allowed_block_types_all' ) ) {
+			$this->loader->add_filter( 'allowed_block_types_all', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		} else {
+			$this->loader->add_filter( 'allowed_block_types', $plugin_admin, 'filter_allowed_block_types', 1000, 2);
+		}
+
 	}
 
 	/**

@@ -277,7 +277,7 @@ class Pr_Bazaarvoice_Admin {
 		if (is_array( $allowed_block_types ) && !in_array( $this->plugin_name.'/bazaarvoice', $allowed_block_types )) {
 			$allowed_block_types[] = $this->plugin_name.'/bazaarvoice';
 		}
-		
+
 		return $allowed_block_types;
 
 	}
