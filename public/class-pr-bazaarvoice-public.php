@@ -104,18 +104,24 @@ class Pr_Bazaarvoice_Public {
 	*/
 	public function add_js_to_footer() {
 		global $sitepress;
+		$block_found = 0;
 
 		// If bazaarvoice is not in the block then dont include the js
 		if (!is_admin()) {
 			$post = get_post();
-
 			if ( has_blocks( $post->post_content ) ) {
 				$blocks = parse_blocks( $post->post_content );
-
-				if (!in_array($this->plugin_name.'/bazaarvoice', $blocks)) {
-					return;
+				foreach ($blocks as $block) {
+					if (in_array($this->plugin_name.'/bazaarvoice', $block)) {
+						$block_found = 1;
+						break;
+					}
 				}
 			}
+		}
+
+		if ($block_found == 0) {
+			return;
 		}
 
 		$option_name = PR_BAZAARVOICE_NAME;
@@ -134,7 +140,11 @@ class Pr_Bazaarvoice_Public {
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
 		if (!$wpml_options || empty($wpml_options['active_languages']) ) {
 			if (!empty($default_field_value)) {
-				return $default_field_value;
+				echo '<!--- Code for bazaarvoice -->';
+				echo $default_field_value;
+				echo '<!--- End code for bazaarvoice -->';
+
+				return;
 			}
 		}
 
@@ -171,9 +181,9 @@ class Pr_Bazaarvoice_Public {
 
 		// If a value is set we print the javascript in the footer
 		if (!empty($default_field_value)) {
-			echo '<!--- Code for bazaarvoice code -->';
+			echo '<!--- Code for bazaarvoice -->';
 			echo $default_field_value;
-			echo '<!--- End code for bazaarvoice code -->';
+			echo '<!--- End code for bazaarvoice -->';
 		}
 
 	}
