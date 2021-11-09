@@ -1,0 +1,8 @@
+{
+    "name": "TotalOnion/bazaar-voice",
+    "description": "Bazaar Voice plugin for Wordpress.",
+    "type": "wordpress-plugin",
+    "require": {
+    },
+    "license": "proprietary"
+}
