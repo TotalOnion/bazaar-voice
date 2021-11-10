@@ -206,36 +206,34 @@ class Pr_Bazaarvoice_Admin {
 			return;
 		}
 
-		if (is_plugin_active('WPML Multilingual CMS')) {
-			// Loop over all the markets and get the name, and if they are currently hidden
-			$market_data = array();
-			foreach ( $wpml_options['active_languages'] as $active_language ) {
-				$details = $sitepress->get_language_details( $active_language );
-				if ( !$details ) {
-					continue;
-				}
-
-				$market_data[] = array(
-					'code'      => $details[ 'code' ],
-					'name'      => $details[ 'english_name' ]
-				);
+		// Loop over all the markets and get the name, and if they are currently hidden
+		$market_data = array();
+		foreach ( $wpml_options['active_languages'] as $active_language ) {
+			$details = $sitepress->get_language_details( $active_language );
+			if ( !$details ) {
+				continue;
 			}
 
-			// Loop over the markets and output the fields
-			foreach ($market_data as $market) {
+			$market_data[] = array(
+				'code'      => $details[ 'code' ],
+				'name'      => $details[ 'english_name' ]
+			);
+		}
 
-				// Add settings field
-				$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
+		// Loop over the markets and output the fields
+		foreach ($market_data as $market) {
 
-				add_settings_field(
-					$bazaarvoice_language_field,				// id="" value
-					$market['name'].' override',				// <label> vale
-					array( $this, 'render_fields' ),			// callback to actually do the rendering of the input
-					PR_BAZAARVOICE_SLUG . '-settings-page',		// Slug of the page to show this on (defined in registerPage above)
-					PR_BAZAARVOICE_NAME . '_options_section',	// slug of the sction the field appears in
-					array($bazaarvoice_language_field)			// Args for the field
-				);
-			}
+			// Add settings field
+			$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
+
+			add_settings_field(
+				$bazaarvoice_language_field,				// id="" value
+				$market['name'].' override',				// <label> vale
+				array( $this, 'render_fields' ),			// callback to actually do the rendering of the input
+				PR_BAZAARVOICE_SLUG . '-settings-page',		// Slug of the page to show this on (defined in registerPage above)
+				PR_BAZAARVOICE_NAME . '_options_section',	// slug of the sction the field appears in
+				array($bazaarvoice_language_field)			// Args for the field
+			);
 		}
 	}
 
@@ -259,7 +257,11 @@ class Pr_Bazaarvoice_Admin {
 		if (!empty($array)) {
 			$bazaarvoice_field_name = $array[0];
 			if (!empty($options)) {
-				$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
+				if (!empty($options[$bazaarvoice_field_name])) {
+					$bazaarvoice_field_value = $options[$bazaarvoice_field_name];
+				} else {
+					$bazaarvoice_field_value = '';
+				}
 			}
 		}
 
