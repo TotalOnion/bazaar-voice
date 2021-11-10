@@ -104,6 +104,7 @@ class Pr_Bazaarvoice_Public {
 	*/
 	public function add_js_to_footer() {
 		global $sitepress;
+
 		$block_found = 0;
 
 		// If bazaarvoice is not in the block then dont include the js
@@ -138,7 +139,8 @@ class Pr_Bazaarvoice_Public {
 		}
 
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
-		if (!$wpml_options || empty($wpml_options['active_languages']) ) {
+		$wpml_options = get_option( 'icl_sitepress_settings' );
+		if (empty($wpml_options) || empty($wpml_options['active_languages']) ) {
 			if (!empty($default_field_value)) {
 				echo '<!--- Code for bazaarvoice -->';
 				echo $default_field_value;
