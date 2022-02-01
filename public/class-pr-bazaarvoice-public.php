@@ -49,54 +49,8 @@ class Pr_Bazaarvoice_Public {
 	* @param      string    $version    The version of this plugin.
 	*/
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
-	}
-
-	/**
-	* Register the stylesheets for the public-facing side of the site.
-	*
-	* @since    1.0.0
-	*/
-	public function enqueue_styles() {
-
-		/**
-		* This function is provided for demonstration purposes only.
-		*
-		* An instance of this class should be passed to the run() function
-		* defined in Pr_Bazaarvoice_Loader as all of the hooks are defined
-		* in that particular class.
-		*
-		* The Pr_Bazaarvoice_Loader will then create the relationship
-		* between the defined hooks and the functions defined in this
-		* class.
-		*/
-
-	}
-
-	/**
-	* Register the JavaScript for the public-facing side of the site.
-	*
-	* @since    1.0.0
-	*/
-	public function enqueue_scripts() {
-
-		/**
-		* This function is provided for demonstration purposes only.
-		*
-		* An instance of this class should be passed to the run() function
-		* defined in Pr_Bazaarvoice_Loader as all of the hooks are defined
-		* in that particular class.
-		*
-		* The Pr_Bazaarvoice_Loader will then create the relationship
-		* between the defined hooks and the functions defined in this
-		* class.
-		*/
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/pr-bazaarvoice-public.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	/**
@@ -105,7 +59,7 @@ class Pr_Bazaarvoice_Public {
 	public function add_js_to_footer() {
 		global $sitepress;
 
-		$block_found = 0;
+		$block_found = false;
 
 		// If bazaarvoice is not in the block then dont include the js
 		if (!is_admin()) {
@@ -114,14 +68,14 @@ class Pr_Bazaarvoice_Public {
 				$blocks = parse_blocks( $post->post_content );
 				foreach ($blocks as $block) {
 					if (in_array($this->plugin_name.'/bazaarvoice', $block)) {
-						$block_found = 1;
+						$block_found = true;
 						break;
 					}
 				}
 			}
 		}
 
-		if ($block_found == 0) {
+		if ( ! $block_found ) {
 			return;
 		}
 
@@ -130,9 +84,9 @@ class Pr_Bazaarvoice_Public {
 		$default_field = PR_BAZAARVOICE_NAME . '-default-code';
 
 		// Get the default field value
-		if (!empty($option_values)) {
-			foreach ($option_values as $option => $value) {
-				if ($default_field == $option) {
+		if ( ! empty( $option_values ) ) {
+			foreach ( $option_values as $option => $value ) {
+				if ( $default_field === $option ) {
 					$default_field_value = $value;
 				}
 			}
@@ -140,8 +94,8 @@ class Pr_Bazaarvoice_Public {
 
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
 		$wpml_options = get_option( 'icl_sitepress_settings' );
-		if (empty($wpml_options) || empty($wpml_options['active_languages']) ) {
-			if (!empty($default_field_value)) {
+		if ( empty( $wpml_options ) || empty( $wpml_options['active_languages'] ) ) {
+			if ( ! empty( $default_field_value ) ) {
 				echo '<!--- Code for bazaarvoice -->';
 				echo $default_field_value;
 				echo '<!--- End code for bazaarvoice -->';
@@ -190,55 +144,70 @@ class Pr_Bazaarvoice_Public {
 
 	}
 
-	/**
-	* Bazaarvoice shortcode
-	*/
-	public function bazaarvoice_shortcode($atts = []) {
-		$type_array = array();
-		$output = '';
+	public function render_block( $attributes, $content )
+	{
+		return apply_filters(
+			'bazaarvoice_filter',
+			$attributes,
+			$content
+		);
+	}
 
+	/**
+	 * Bazaarvoice shortcode in the form:
+	 * [bazaarvoice bazaarvoice_product_id="44508001" type="reviews" title=""]
+	 */
+	public function bazaarvoice_shortcode($atts = [])
+	{
 		// Get the attributes
 		$attributes = shortcode_atts([
-			'id' => null,
+			'bazaarvoice_product_id' => null,
 			'type' => null,
 			'title' => null
 		], $atts, 'bazaarvoice');
 
 		// Return the bazaar voice code if we have an id
-		if (!empty($attributes['id'])) {
-			return apply_filters('bazaarvoice_filter', $attributes['id'], $attributes['type'], $attributes['title']);
-		}
-
+		return apply_filters(
+			'bazaarvoice_filter',
+			$attributes,
+			''
+		);
 	}
 
 	/**
-	* Bazaarvoice filter to modify html
-	* called via apply_filters('bazaarvoice_filter', id='1234' type='reviews' title=''');
-	*/
-	public function bazaarvoice_block_filter($id, $types, $title) {
-
-		// This will return the html for the bazaarvoice block
-		$new_output = '<section class="review-block" id="'.$id.'">';
-  		$new_output .= '<div>';
-
-		// If you have a title
-		if (!empty($title)) {
-			$new_output .= '<h1>';
-	  		$new_output .= $title;
-			$new_output .= '</h1>';
+	 * Filter for the shortcode and Gutenberg block output
+	 */
+	public function bazaarvoice_block_filter( $attributes, $content )
+	{
+		if ( ! array_key_exists( 'bazaarvoice_product_id', $attributes ) ) {
+			return '';
 		}
 
-		if (is_array($types)) {
-			foreach ($types as $type) {
-				$new_output .= '<div data-bv-show="'.$type.'" data-bv-product-id="'.$id.'">Bazaarvoice shortcode - '.$type.'</div>';
+		$bv_data_blocks  = '';
+		$available_types = array(
+			'ratingsummary',
+			'reviews',
+			'review_highlights',
+			'inline_rating'
+		);
+
+		foreach ( $available_types as $available_type ) {
+			if (
+				array_key_exists( $available_type, $attributes )
+				&& $attributes[$available_type]
+			) {
+				$bv_data_blocks .= sprintf(
+					'<div data-bv-show="%s" data-bv-product-id="%s"></div>',
+					$available_type,
+					$attributes['bazaarvoice_product_id']
+				);
 			}
-		} else {
-			$new_output = '<div data-bv-show="'.$types.'" data-bv-product-id="'.$id.'">Bazaarvoice shortcode - '.$types.'</div>';
 		}
 
-		$new_output .= '</section>';
-
-		return $new_output;
+		return <<<EOS
+			<section class="wp-block-pr-bazaarvoice-bazaarvoice">
+				$bv_data_blocks
+			</section>
+EOS;
 	}
-
 }

@@ -16,7 +16,7 @@
 
 <div class="wrap">
     <h1>
-        <?php _e( 'Bazaarvoice Settings', 'PR Bazaarvoice' ); ?>
+        <?php _e( 'BazaarVoice Settings', 'PR Bazaarvoice' ); ?>
     </h1>
     <form method="post" action="options.php">
         <?php
