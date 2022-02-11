@@ -5,7 +5,7 @@ wp.blocks.registerBlockType('pr-bazaarvoice/bazaarvoice', {
 	category: 'text',
 	attributes: {
 		bazaarvoice_product_id: { type: 'string' },
-		ratingsummary: { type: 'boolean', default: false },
+		rating_summary: { type: 'boolean', default: false },
 		reviews: { type: 'boolean', default: false },
 		review_highlights: { type: 'boolean', default: false },
  		inline_rating: { type: 'boolean', default: false },
@@ -61,10 +61,10 @@ wp.blocks.registerBlockType('pr-bazaarvoice/bazaarvoice', {
 			React.createElement(
 				'input',{
 					type: 'checkbox',
-					defaultChecked: props.attributes.ratingsummary,
+					defaultChecked: props.attributes.rating_summary,
 					label: 'Rating Summary',
-					name: 'ratingsummary',
-					id: 'ratingsummary',
+					name: 'rating_summary',
+					id: 'rating_summary',
 					onChange: onChangeCheckbox,
 				}
 			),

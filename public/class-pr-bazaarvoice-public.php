@@ -23,6 +23,8 @@
 
 class Pr_Bazaarvoice_Public {
 
+	const FORCE_ADD_JS_TO_PAGE = true;
+
 	/**
 	* The ID of this plugin.
 	*
@@ -54,81 +56,89 @@ class Pr_Bazaarvoice_Public {
 	}
 
 	/**
-	* Add the local js to footer
-	*/
-	public function add_js_to_footer() {
-		global $sitepress;
+	 * Enqueue the js
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_scripts()
+	{
+		$this->add_js_to_footer();
+	}
 
-		$block_found = false;
+	/**
+	 * Add the local js to footer, if there is a block on the page, or the shortcode is used
+	 */
+	public function add_js_to_footer( bool $force_add_to_page = false )
+	{
+		$script_reference = PR_BAZAARVOICE_NAME . '/public.js';
 
-		// If bazaarvoice is not in the block then dont include the js
-		if (!is_admin()) {
-			$post = get_post();
-			if ( has_blocks( $post->post_content ) ) {
-				$blocks = parse_blocks( $post->post_content );
-				foreach ($blocks as $block) {
-					if (in_array($this->plugin_name.'/bazaarvoice', $block)) {
-						$block_found = true;
-						break;
-					}
-				}
-			}
-		}
-
-		if ( ! $block_found ) {
+		// don't bother doing the checks below if the script has already been enqueued
+		if( wp_script_is( $script_reference, 'enqueued' ) ) {
 			return;
 		}
 
-		$option_name = PR_BAZAARVOICE_NAME;
-		$option_values = get_option($option_name);
+		// If we're not forcing the js to be added to the page (via a shortcode),
+		// make suree there is a BazaarVoice gutenberg block. If there isn't one,
+		// we don't need the script
+		if ( ! $force_add_to_page ) {
+			$block_found = false;
+
+			// If bazaarvoice is not in the block then dont include the js
+			if (!is_admin()) {
+				$post = get_post();
+				if ( has_blocks( $post->post_content ) ) {
+					$blocks = parse_blocks( $post->post_content );
+					foreach ($blocks as $block) {
+						if (in_array($this->plugin_name.'/bazaarvoice', $block)) {
+							$block_found = true;
+							break;
+						}
+					}
+				}
+			}
+
+			if ( ! $block_found ) {
+				return;
+			}
+		}
+
+		$option_values = get_option( PR_BAZAARVOICE_NAME );
 		$default_field = PR_BAZAARVOICE_NAME . '-default-code';
+		$bv_script_url = null;
 
 		// Get the default field value
 		if ( ! empty( $option_values ) ) {
 			foreach ( $option_values as $option => $value ) {
 				if ( $default_field === $option ) {
-					$default_field_value = $value;
+					$bv_script_url = $value;
 				}
 			}
 		}
 
 		// Get the WPML settings or return if there are none (ie WPML has been deactivayed)
 		$wpml_options = get_option( 'icl_sitepress_settings' );
-		if ( empty( $wpml_options ) || empty( $wpml_options['active_languages'] ) ) {
-			if ( ! empty( $default_field_value ) ) {
-				echo '<!--- Code for bazaarvoice -->';
-				echo $default_field_value;
-				echo '<!--- End code for bazaarvoice -->';
-
-				return;
-			}
-		}
-
 
 		// Loop over all the markets and get the market code
-		if (!empty($wpml_options) || !empty($wpml_options['active_languages']) ) {
-			$market_data = array();
+		if (
+			! empty( $wpml_options )
+			|| ! empty( $wpml_options['active_languages'] )
+		) {
+			global $sitepress;
+
 			foreach ( $wpml_options['active_languages'] as $active_language ) {
 				$details = $sitepress->get_language_details( $active_language );
 				if ( !$details ) {
 					continue;
 				}
 
-				$market_data[] = array(
-					'code'      => $details[ 'code' ]
-				);
-			}
-
-			// Loop over the markets and get the fields
-			foreach ($market_data as $market) {
-
 				// Set the field name
-				$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
+				$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $details['code'] . '-code';
 
-				foreach ($option_values as $option => $value) {
-					if ($bazaarvoice_language_field == $option) {
-						if (!empty($value)) {
-							$default_field_value = $value;
+				foreach ( $option_values as $option => $value ) {
+					if ( $bazaarvoice_language_field == $option ) {
+						if ( ! empty( $value ) ) {
+							$bv_script_url = $value;
+							break 2;
 						}
 					}
 				}
@@ -136,12 +146,15 @@ class Pr_Bazaarvoice_Public {
 		}
 
 		// If a value is set we print the javascript in the footer
-		if (!empty($default_field_value)) {
-			echo '<!--- Code for bazaarvoice -->';
-			echo $default_field_value;
-			echo '<!--- End code for bazaarvoice -->';
+		if ( ! empty( $bv_script_url ) ) {
+			wp_enqueue_script(
+				$script_reference,
+				$bv_script_url,
+				array(),
+				$this->version,
+				true
+			);
 		}
-
 	}
 
 	public function render_block( $attributes, $content )
@@ -155,16 +168,33 @@ class Pr_Bazaarvoice_Public {
 
 	/**
 	 * Bazaarvoice shortcode in the form:
-	 * [bazaarvoice bazaarvoice_product_id="44508001" type="reviews" title=""]
+	 * [bazaarvoice bazaarvoice_product_id="44508001" type="reviews"]
+	 * @since 1.0.0
+	 * @param array $attributes
+	 * @return string
 	 */
-	public function bazaarvoice_shortcode($atts = [])
+	public function bazaarvoice_shortcode( array $attributes = [] ): string
 	{
+		$this->add_js_to_footer( self::FORCE_ADD_JS_TO_PAGE );
+
 		// Get the attributes
 		$attributes = shortcode_atts([
 			'bazaarvoice_product_id' => null,
-			'type' => null,
-			'title' => null
-		], $atts, 'bazaarvoice');
+			'type' => ''
+		], $attributes, 'bazaarvoice');
+
+		$types = array_map(
+			function( $type ) {
+				return trim( $type );
+			},
+			explode( ',', $attributes['type'] )
+		);
+
+		foreach ( $types as $type ) {
+			$attributes[ $type ] = true;
+		}
+
+		unset( $attributes['type'] );
 
 		// Return the bazaar voice code if we have an id
 		return apply_filters(
@@ -177,15 +207,18 @@ class Pr_Bazaarvoice_Public {
 	/**
 	 * Filter for the shortcode and Gutenberg block output
 	 */
-	public function bazaarvoice_block_filter( $attributes, $content )
+	public function bazaarvoice_block_filter( array $attributes, $content ): string
 	{
-		if ( ! array_key_exists( 'bazaarvoice_product_id', $attributes ) ) {
+		if (
+			! array_key_exists( 'bazaarvoice_product_id', $attributes )
+			|| empty( $attributes[ 'bazaarvoice_product_id' ] )
+		) {
 			return '';
 		}
 
 		$bv_data_blocks  = '';
 		$available_types = array(
-			'ratingsummary',
+			'rating_summary',
 			'reviews',
 			'review_highlights',
 			'inline_rating'
