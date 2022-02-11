@@ -222,25 +222,21 @@ class Pr_Bazaarvoice_Admin {
 				continue;
 			}
 
-			$market_data[] = array(
-				'code'      => $details[ 'code' ],
-				'name'      => $details[ 'english_name' ]
-			);
-		}
-
-		// Loop over the markets and output the fields
-		foreach ($market_data as $market) {
-
 			// Add settings field
-			$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $market['code'] . '-code';
+			$bazaarvoice_language_field = PR_BAZAARVOICE_NAME . '-' . $details['code'] . '-code';
+			$label = sprintf(
+				'%s override (%s)',
+				$details[ 'english_name' ],
+				$details[ 'code' ]
+			);
 
 			add_settings_field(
-				$bazaarvoice_language_field,				// id="" value
-				$market['name'].' override',				// <label> vale
-				array( $this, 'render_fields' ),			// callback to actually do the rendering of the input
-				PR_BAZAARVOICE_SLUG . '-settings-page',		// Slug of the page to show this on (defined in registerPage above)
-				PR_BAZAARVOICE_NAME . '_options_section',	// slug of the sction the field appears in
-				array($bazaarvoice_language_field)			// Args for the field
+				$bazaarvoice_language_field,               // id="" value
+				$label,                                    // <label> vale
+				array( $this, 'render_fields' ),           // callback to actually do the rendering of the input
+				PR_BAZAARVOICE_SLUG . '-settings-page',    // Slug of the page to show this on (defined in registerPage above)
+				PR_BAZAARVOICE_NAME . '_options_section',  // slug of the sction the field appears in
+				array($bazaarvoice_language_field)         // Args for the field
 			);
 		}
 	}
