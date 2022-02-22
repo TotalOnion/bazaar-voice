@@ -188,14 +188,13 @@ class Pr_Bazaarvoice {
 		$plugin_public = new Pr_Bazaarvoice_Public( $this->get_plugin_name(), $this->get_version() );
 
 		// Add bazaarcode js to footer
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'add_js_to_footer' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 		// Add shortcode
-		add_shortcode('bazaarvoice', array($plugin_public, 'bazaarvoice_shortcode'));
+		add_shortcode('bazaarvoice', array( $plugin_public, 'bazaarvoice_shortcode' ));
 
 		// Add filter to shortcode
-		add_filter('bazaarvoice_filter', array($plugin_public, 'bazaarvoice_block_filter'), 10, 3);
-
+		add_filter('bazaarvoice_filter', array( $plugin_public, 'bazaarvoice_block_filter' ), 10, 3);
 	}
 
 	/**
